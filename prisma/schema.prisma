@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+  includeRequiredFields = "true"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Song {
+  disk       Disk   @relation(fields: [diskName], references: [name])
+  track      String
+  name       String
+  id         Int    @id @default(autoincrement())
+  length     Int
+  artist     Artist @relation(fields: [artistName], references: [name])
+  artistName String
+  diskName   String
+}
+
+model Disk {
+  name       String @unique
+  id         Int    @id 
+  artistName String
+  artist     Artist @relation(fields: [artistName], references: [name])
+  barcode    Int    @unique
+  year       Int
+  genre      String
+  format     String
+  style      String
+  Song       Song[]
+  location   String
+}
+
+model Artist {
+  id   Int    @id
+  name String @unique
+  img  String
+  Song Song[]
+  Disk Disk[]
+}
+
+model Label {
+  id   Int    @id
+  name String
+}

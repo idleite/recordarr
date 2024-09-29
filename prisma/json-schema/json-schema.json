@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Song": {
+      "type": "object",
+      "properties": {
+        "disk": {
+          "$ref": "#/definitions/Disk"
+        },
+        "track": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "length": {
+          "type": "integer"
+        },
+        "artist": {
+          "$ref": "#/definitions/Artist"
+        }
+      },
+      "required": [
+        "track",
+        "name",
+        "length",
+        "artistName",
+        "diskName"
+      ]
+    },
+    "Disk": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "artist": {
+          "$ref": "#/definitions/Artist"
+        },
+        "barcode": {
+          "type": "integer"
+        },
+        "year": {
+          "type": "integer"
+        },
+        "genre": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        },
+        "style": {
+          "type": "string"
+        },
+        "Song": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Song"
+          }
+        },
+        "location": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "id",
+        "artistName",
+        "barcode",
+        "year",
+        "genre",
+        "format",
+        "style",
+        "location"
+      ]
+    },
+    "Artist": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "img": {
+          "type": "string"
+        },
+        "Song": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Song"
+          }
+        },
+        "Disk": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Disk"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "img"
+      ]
+    },
+    "Label": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "song": {
+      "$ref": "#/definitions/Song"
+    },
+    "disk": {
+      "$ref": "#/definitions/Disk"
+    },
+    "artist": {
+      "$ref": "#/definitions/Artist"
+    },
+    "label": {
+      "$ref": "#/definitions/Label"
+    }
+  }
+}
