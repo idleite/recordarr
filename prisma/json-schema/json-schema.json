@@ -17,7 +17,10 @@
           "type": "integer"
         },
         "length": {
-          "type": "integer"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "artist": {
           "$ref": "#/definitions/Artist"
@@ -26,7 +29,6 @@
       "required": [
         "track",
         "name",
-        "length",
         "artistName",
         "diskName"
       ]
@@ -44,19 +46,28 @@
           "$ref": "#/definitions/Artist"
         },
         "barcode": {
-          "type": "integer"
+          "type": "string"
         },
         "year": {
           "type": "integer"
         },
         "genre": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "format": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "style": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "Song": {
           "type": "array",
@@ -66,6 +77,13 @@
         },
         "location": {
           "type": "string"
+        },
+        "case": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": true
         }
       },
       "required": [
@@ -74,9 +92,6 @@
         "artistName",
         "barcode",
         "year",
-        "genre",
-        "format",
-        "style",
         "location"
       ]
     },
@@ -90,7 +105,10 @@
           "type": "string"
         },
         "img": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "Song": {
           "type": "array",
@@ -107,8 +125,7 @@
       },
       "required": [
         "id",
-        "name",
-        "img"
+        "name"
       ]
     },
     "Label": {

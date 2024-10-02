@@ -1,13 +1,24 @@
 import { DiscogsClient } from '@lionralfs/discogs-client';
 import { PrismaClient, Prisma } from '@prisma/client'
 const prisma = new PrismaClient()
-export default function(DiskBarcode, DiskLocation) {
+export async  function FormDiskSave(formData) {
+  "use server";
+	const barcode = formData.get("barcode");
+  const location = formData.get("location");
+  DiskSave(barcode, location)
+
+}
+export default async function DiskSave(DiskBarcode, DiskLocation, isChecked) {
+    DiskBarcode = DiskBarcode.toString()
     let client = new DiscogsClient({ auth: { userToken: 'MqOJxeayrbHuVEvjJBXUpehWgMLDGoPbnsbuQumK' } });
-    let db = client.database();
-    db.search({ barcode: DiskBarcode})
-    .then(function ({ data }) {
-        db.getRelease(data.results[0]["id"])
-            .then(function ({ data}) {
+    let db  = await client.database();
+    let data = await db.search({ barcode: DiskBarcode})
+    if (data.data.results.length==0){
+      return false
+    }
+    console.log(data.data.results.length)
+    data = (await db.getRelease(data.data.results[0]["id"])).data
+    // console.log(data)
                 let DiskYear = data["year"];
                 let DiskID = data["id"];
                 let DiskFormat = data["formats"][0]["name"]
@@ -17,8 +28,9 @@ export default function(DiskBarcode, DiskLocation) {
                 let ArtistName = data["artists"][0]["name"]
                 let ArtistID = data["artists"][0]["id"]
                 let ArtistImg = data["artists"][0]["thumbnail_url"]
-                const Disk =  prisma.Disk.create({
+                const Disk = await prisma.disk.create({
                     data: {
+                      case: isChecked,
                       name: DiskName,
                       id: DiskID,
                       barcode: DiskBarcode,
@@ -46,7 +58,8 @@ export default function(DiskBarcode, DiskLocation) {
                     let SongDuration = value["duration"]
                     let SongName = value["title"]
                     let SongTrack = value["position"]
-                    const song =  prisma.song.create({
+                    console.log(SongName)
+                    const song = await prisma.song.create({
                         data: {
                           length: SongDuration,
                           name: SongName,
@@ -63,8 +76,8 @@ export default function(DiskBarcode, DiskLocation) {
                           }
                         },
                       })
+                      console.log(song.track)
                   }
-
-            })
-    });
-}
+return true
+            }
+// DiskSave(074644504811, "1-02")

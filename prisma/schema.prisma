@@ -15,7 +15,7 @@ generator jsonSchema {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:password@10.10.1.203:3307/proddb"
 }
 
 model Song {
@@ -23,7 +23,7 @@ model Song {
   track      String
   name       String
   id         Int    @id @default(autoincrement())
-  length     Int
+  length     String?
   artist     Artist @relation(fields: [artistName], references: [name])
   artistName String
   diskName   String
@@ -34,19 +34,20 @@ model Disk {
   id         Int    @id 
   artistName String
   artist     Artist @relation(fields: [artistName], references: [name])
-  barcode    Int    @unique
+  barcode    String    @unique
   year       Int
-  genre      String
-  format     String
-  style      String
+  genre      String?
+  format     String?
+  style      String?
   Song       Song[]
   location   String
+  case       Boolean? @default(true)
 }
 
 model Artist {
   id   Int    @id
   name String @unique
-  img  String
+  img  String?
   Song Song[]
   Disk Disk[]
 }
