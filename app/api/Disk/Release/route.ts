@@ -3,7 +3,7 @@ import {DiskSaveRelease} from "@/app/create/Disk"
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
-  const ReleaseNumber = formData.get('ReleaseNumber')?.toString()
+  const ReleaseNumber = formData.get('Release')
   const location = formData.get('location')
   const isChecked = (formData.get('isChecked') =="true");
 

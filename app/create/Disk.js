@@ -1,10 +1,10 @@
 import { DiscogsClient } from '@lionralfs/discogs-client';
-import { PrismaClient, Prisma } from '@prisma/client'
+const client = new DiscogsClient({ auth: { userToken: 'MqOJxeayrbHuVEvjJBXUpehWgMLDGoPbnsbuQumK' } });
+import { PrismaClient, Prisma } from '@prisma/client';
 const prisma = new PrismaClient()
 
 export default async function DiskSave(DiskBarcode, DiskLocation, isChecked) {
     DiskBarcode = DiskBarcode.toString()
-    let client = new DiscogsClient({ auth: { userToken: 'MqOJxeayrbHuVEvjJBXUpehWgMLDGoPbnsbuQumK' } });
     let db  = await client.database();
     let data = await db.search({ barcode: DiskBarcode})
     if (data.data.results.length==0){
@@ -77,11 +77,11 @@ return true
 
 // Get A Disk Release from Discogs and add to DB Based on Discogs Release Number
 export async function DiskSaveRelease(ReleaseNumber, DiskLocation, isChecked) {
-  ReleaseNumber = ReleaseNumber.toString()
-  let client = new DiscogsClient({ auth: { userToken: 'MqOJxeayrbHuVEvjJBXUpehWgMLDGoPbnsbuQumK' } });
+  console.log(ReleaseNumber)
+  // const client = new DiscogsClient({ auth: { userToken: 'bukmIhtWYBJQyXQyiQoPaUHZepdNVjZTMOkekekh' } });
   let db  = await client.database();
-  data = (await db.getRelease(ReleaseNumber)).data
-  // console.log(data)
+  let data = (await db.getRelease(ReleaseNumber)).data
+  console.log(data)
               let DiskYear = data["year"];
               let DiskID = data["id"];
               let DiskFormat = data["formats"][0]["name"]
@@ -91,6 +91,19 @@ export async function DiskSaveRelease(ReleaseNumber, DiskLocation, isChecked) {
               let ArtistName = data["artists"][0]["name"]
               let ArtistID = data["artists"][0]["id"]
               let ArtistImg = data["artists"][0]["thumbnail_url"]
+              let DiskBarcode = null
+              let DiskImg = data["images"][0]["uri150"]
+              console.log({
+                case: isChecked,
+                name: DiskName,
+                id: DiskID,
+                barcode: DiskBarcode,
+                year: DiskYear,
+                genre: DiskGenre,
+                format: DiskFormat,
+                style: DiskStyle,
+                location: DiskLocation,
+                img: DiskImg})
               const Disk = await prisma.disk.create({
                   data: {
                     case: isChecked,
@@ -102,6 +115,7 @@ export async function DiskSaveRelease(ReleaseNumber, DiskLocation, isChecked) {
                     format: DiskFormat,
                     style: DiskStyle,
                     location: DiskLocation,
+                    img: DiskImg,
                     artist: {
                       connectOrCreate: {
                           where: {

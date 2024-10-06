@@ -24,13 +24,19 @@
         },
         "artist": {
           "$ref": "#/definitions/Artist"
+        },
+        "diskName": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
       "required": [
         "track",
         "name",
         "artistName",
-        "diskName"
+        "diskId"
       ]
     },
     "Disk": {
@@ -46,7 +52,10 @@
           "$ref": "#/definitions/Artist"
         },
         "barcode": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "year": {
           "type": "integer"
@@ -97,7 +106,6 @@
         "name",
         "id",
         "artistName",
-        "barcode",
         "year",
         "location"
       ]

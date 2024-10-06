@@ -19,22 +19,23 @@ datasource db {
 }
 
 model Song {
-  disk       Disk   @relation(fields: [diskName], references: [name])
+  disk       Disk   @relation(fields: [diskId], references: [id])
   track      String
   name       String
   id         Int    @id @default(autoincrement())
   length     String?
   artist     Artist @relation(fields: [artistName], references: [name])
   artistName String
-  diskName   String
+  diskName   String?
+  diskId     Int
 }
 
 model Disk {
-  name       String @unique
+  name       String 
   id         Int    @id 
   artistName String
   artist     Artist @relation(fields: [artistName], references: [name])
-  barcode    String    @unique
+  barcode    String?    @unique
   year       Int
   genre      String?
   format     String?

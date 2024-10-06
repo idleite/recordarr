@@ -1,16 +1,18 @@
 "use client";
 import React, { useState } from 'react';
-import Navbar from '@/components/Nav';
-export default function Page() {
+import SliderTabs from '@/components/Slider'; // Assuming the slider is in the same folder
+
+export default function ReleasePage() {
   const [RecordKey, setRecordKey] = useState<number>(0);
   const [RecordBox, setRecordBox] = useState<string>('01');
-  const [barcode, setBarcode] = useState<string>('');
+  const [Release, setRelease] = useState<string>('');
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isFailed, setIsFailed] = useState<boolean>(false);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLFormElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
+      console.log(Release);
       console.log(`Form submitted with RecordBox: ${RecordBox}, RecordKey: ${RecordKey}`);
     }
   };
@@ -18,12 +20,13 @@ export default function Page() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const body = new URLSearchParams();
-    body.append('barcode', barcode);
+    console.log(Release);
+    body.append('Release', Release);
     body.append('location', `${RecordBox}-${RecordKey}`);
     body.append('isChecked', isChecked.toString());
 
     try {
-      const response = await fetch('/api/Disk', {
+      const response = await fetch('/api/Disk/Release', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -34,12 +37,12 @@ export default function Page() {
       const result = await response.json();
       if (response.ok) {
         console.log('Form submitted successfully:', result);
-        setBarcode('');
+        setRelease('');
         setIsChecked(true);
         setRecordKey((prevKey) => prevKey + 1);
         setIsFailed(false);
       } else {
-        setBarcode('');
+        setRelease('');
         setIsChecked(true);
         console.error('Form submission error:', result);
         setIsFailed(true);
@@ -50,28 +53,22 @@ export default function Page() {
     }
   };
 
-  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const [box, key] = value.split('-');
-    setRecordBox(box || RecordBox);
-    setRecordKey(parseInt(key, 10) || 0);
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <SliderTabs currentPage='release' />
       <form 
         onSubmit={handleSubmit} 
         onKeyUp={handleKeyPress} 
-        className="bg-white p-6 rounded shadow-md w-80"
+        className="bg-white p-6 rounded shadow-md w-80 mt-12"
       >
-        <h2 className="text-lg font-semibold mb-4">Barcode Submission Form</h2>
+        <h2 className="text-lg font-semibold mb-4">Release Submission Form</h2>
 
-        <label htmlFor="barcode" className="block mb-1 font-medium">Barcode</label>
+        <label htmlFor="Release" className="block mb-1 font-medium">Release</label>
         <input
-          name="barcode"
-          id="barcode"
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
+          name="Release"
+          id="Release"
+          value={Release}
+          onChange={(e) => setRelease(e.target.value)}
           className="border border-gray-300 p-2 rounded mb-4 w-full"
           required
         />
@@ -79,8 +76,8 @@ export default function Page() {
         <label htmlFor="location" className="block mb-1 font-medium">Location</label>
         <input
           name="location"
-          value={`${RecordBox}-${RecordKey}`}
-          onChange={handleLocationChange}
+          // value={`${RecordBox}-${RecordKey}`}
+          onChange={(e) => setRecordBox(e.target.value)}
           id="location"
           className="border border-gray-300 p-2 rounded mb-4 w-full"
           required

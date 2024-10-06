@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import Navbar from '@/components/Nav';
-export default function Page() {
+import SliderTabs from '@/components/Slider'; 
+
+export default function BarcodePage() {
   const [RecordKey, setRecordKey] = useState<number>(0);
   const [RecordBox, setRecordBox] = useState<string>('01');
   const [barcode, setBarcode] = useState<string>('');
@@ -50,19 +51,13 @@ export default function Page() {
     }
   };
 
-  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const [box, key] = value.split('-');
-    setRecordBox(box || RecordBox);
-    setRecordKey(parseInt(key, 10) || 0);
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <SliderTabs currentPage='barcode'/>
       <form 
         onSubmit={handleSubmit} 
         onKeyUp={handleKeyPress} 
-        className="bg-white p-6 rounded shadow-md w-80"
+        className="bg-white p-6 rounded shadow-md w-80 mt-12"
       >
         <h2 className="text-lg font-semibold mb-4">Barcode Submission Form</h2>
 
@@ -80,7 +75,7 @@ export default function Page() {
         <input
           name="location"
           value={`${RecordBox}-${RecordKey}`}
-          onChange={handleLocationChange}
+          onChange={(e) => setRecordBox(e.target.value)}
           id="location"
           className="border border-gray-300 p-2 rounded mb-4 w-full"
           required

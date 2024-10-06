@@ -23,14 +23,13 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   if (!album) {
     return <div>Album not found</div>;
   }
-
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto bg-white p-4 shadow-md rounded-md">
         {/* Album Info Section */}
         <div className="flex items-center">
           <Image
-            src={album.img || '/default-album-cover.jpg'}
+            src={album.img || '/download.jpg'}
             alt={`${album.name} cover`}
             width={200}
             height={200}
@@ -39,7 +38,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           <div className="ml-6">
             <h1 className="text-4xl font-bold">{album.name}</h1>
             <p className="text-xl text-gray-600">by 
-              <Link href={`/artist/${album.artistName}`} className="ml-2 text-blue-500 underline">
+              <Link href={`/artist/${album.artist.id}`} className="ml-2 text-blue-500 underline">
                 {album.artist.name}
               </Link>
             </p>
@@ -58,7 +57,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           <ul className="list-disc list-inside">
             {album.Song.map((song) => (
               <li key={song.id} className="text-gray-800">
-                {song.name} {song.length ? `(${song.length})` : ''}
+                {song.name} {song.length ? `(${song.length})` : 'g'}
               </li>
             ))}
           </ul>

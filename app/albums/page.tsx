@@ -3,11 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import AlbumCard from '@/components/AlbumCard';
 import FilterSidebar from '@/components/FilterSidebar';
+interface Artist {
+  id: number;
+  name: string;
+}
 interface Album {
-  artist: string;
+  id: number,
+  artist: Artist;
   artistUrl: string;
-  albumName: string;
-  albumCover: string;
+  name: string;
+  img: string;
   albumUrl: string;
   year: number;
   genre: string;
@@ -52,13 +57,14 @@ export default function AlbumListPage() {
       <div className="flex-1">
         <h1 className="text-3xl font-bold mb-6">Albums</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {albums.map((album) => (
+          {albums.map((album: Album) => (
             <AlbumCard
               key={album.id}
               id={album.id}
+              artistID={album.artist.id}
               artistName={album.artist.name}
               albumName={album.name}
-              imageUrl={album.img || '/default-album-cover.jpg'}
+              imageUrl={album.img || '/download.jpg'}
               year={album.year}
               genre={album.genre || 'Unknown'}
             />
