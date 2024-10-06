@@ -84,6 +84,13 @@
             "null"
           ],
           "default": true
+        },
+        "img": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "/download.jpg"
         }
       },
       "required": [

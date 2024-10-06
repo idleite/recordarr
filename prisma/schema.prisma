@@ -42,6 +42,7 @@ model Disk {
   Song       Song[]
   location   String
   case       Boolean? @default(true)
+  img        String?  @default("/download.jpg")
 }
 
 model Artist {
