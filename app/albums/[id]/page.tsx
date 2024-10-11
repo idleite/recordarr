@@ -1,5 +1,4 @@
-import { PrismaClient} from '@prisma/client';
-import { type Song } from '@prisma/client';
+import { PrismaClient, Song} from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,8 +9,15 @@ interface AlbumPageProps {
     id: string;
   };
 }
-
-  
+interface Song {
+  track: string;
+  name: string;
+  id: number;
+  length: string | null;
+  artistName: string;
+  diskName: string | null;
+  diskId: number;
+}
 // Server component to fetch data for the album
 export default async function AlbumPage({ params }: AlbumPageProps) {
   const album = await prisma.disk.findUnique({
@@ -21,7 +27,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
       Song: true,    // Include related songs
     },
   });
-
   if (!album) {
     return <div>Album not found</div>;
   }
