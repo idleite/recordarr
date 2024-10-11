@@ -1,4 +1,4 @@
-import { PrismaClient, Song} from '@prisma/client';
+import { PrismaClient} from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
