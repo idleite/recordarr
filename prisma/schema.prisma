@@ -14,8 +14,8 @@ generator jsonSchema {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://root:password@10.10.1.203:3307/proddb"
+  provider = "sqlite"
+  url      = "file:./dev.db" // SQLite will use a file for the database
 }
 
 model Song {
@@ -35,7 +35,7 @@ model Disk {
   id         Int    @id 
   artistName String
   artist     Artist @relation(fields: [artistName], references: [name])
-  barcode    String?    @unique
+  barcode    String? @unique
   year       Int
   genre      String?
   format     String?
@@ -43,11 +43,11 @@ model Disk {
   Song       Song[]
   location   String
   case       Boolean? @default(true)
-  img        String?  @default("/download.jpg")
+  img        String? @default("/download.jpg")
 }
 
 model Artist {
-  id   Int    @id
+  id   Int    @id 
   name String @unique
   img  String?
   Song Song[]
@@ -55,6 +55,6 @@ model Artist {
 }
 
 model Label {
-  id   Int    @id
+  id   Int    @id 
   name String
 }

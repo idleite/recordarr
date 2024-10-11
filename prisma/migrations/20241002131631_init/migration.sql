@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `Disk` ADD COLUMN `case` BOOLEAN NULL DEFAULT true;

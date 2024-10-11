@@ -46,7 +46,7 @@ export default function AlbumListPage() {
 
   useEffect(() => {
     fetchAlbums(); // Fetch albums when component mounts or filters change
-  });
+  }, [filters]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex">
