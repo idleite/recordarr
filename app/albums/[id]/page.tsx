@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Song } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -55,7 +55,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         <div className="mt-6">
           <h2 className="text-2xl font-semibold mb-4">Songs</h2>
           <ul className="list-disc list-inside">
-            {album.Song.map((song) => (
+            {album.Song.map((song: Song) => (
               <li key={song.id} className="text-gray-800">
                 {song.name} {song.length ? `(${song.length})` : 'g'}
               </li>
