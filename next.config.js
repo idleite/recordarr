@@ -1,9 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
+  images: {
       domains: ['i.discogs.com'], // Add the domain of the image source
-    },
-  };
-  
+  },
+};
 
-export default nextConfig;
+module.exports = nextConfig;
