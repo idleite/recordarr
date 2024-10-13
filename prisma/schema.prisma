@@ -15,7 +15,7 @@ generator jsonSchema {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:/app/dev.db" // SQLite will use a file for the database
+  url      = "file:./dev.db" // SQLite will use a file for the database
 }
 
 model Song {

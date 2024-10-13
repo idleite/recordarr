@@ -167,3 +167,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 >>>>>>> eb59d5d (init)
+prisma/dev.db
