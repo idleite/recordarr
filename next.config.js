@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-      domains: ['i.discogs.com'], // Add the domain of the image source
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'i.discogs.com',
+        port: '', // Leave empty for default port
+        pathname: '/**', // Match all paths under this hostname
+      },
+    ],
   },
 };
 
