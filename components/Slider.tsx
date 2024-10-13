@@ -12,7 +12,7 @@ const SliderTabs: React.FC<SliderTabsProps> = ({ currentPage }) => {
     <div className="relative w-full bg-gray-200 shadow-md py-2 mb-6 rounded-lg">
       <div className="flex justify-center items-center space-x-6">
         {/* Barcode Page Tab */}
-        <Link href="/album/Create">
+        <Link href="/albums/Create">
           <button
             className={`px-6 py-2 font-semibold rounded-lg transition-colors duration-300 ease-in-out ${
               currentPage === 'barcode'
@@ -25,7 +25,7 @@ const SliderTabs: React.FC<SliderTabsProps> = ({ currentPage }) => {
         </Link>
 
         {/* Release Page Tab */}
-        <Link href="/album/Create/Release">
+        <Link href="/albums/Create/Release">
           <button
             className={`px-6 py-2 font-semibold rounded-lg transition-colors duration-300 ease-in-out ${
               currentPage === 'release'
