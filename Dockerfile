@@ -20,7 +20,7 @@ WORKDIR /app
 # Install only production dependencies
 COPY package*.json ./
 RUN npm install --only=production
-
+RUN npx prisma genrate
 # Copy the built application from the build stage
 COPY --from=build /app/next.config.js ./next.config.js
 COPY --from=build /app/public ./public
