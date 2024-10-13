@@ -51,6 +51,14 @@ export default function BarcodePage() {
     }
   };
 
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const [box, key] = value.split('-');
+
+    setRecordBox(box || ''); // Fallback to empty string if split fails
+    setRecordKey(parseInt(key) || 0); // Fallback to 0 if split fails or key is NaN
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <SliderTabs currentPage='barcode'/>
@@ -75,7 +83,7 @@ export default function BarcodePage() {
         <input
           name="location"
           value={`${RecordBox}-${RecordKey}`}
-          onChange={(e) => setRecordBox(e.target.value)}
+          onChange={handleLocationChange}
           id="location"
           className="border border-gray-300 p-2 rounded mb-4 w-full"
           required
