@@ -1,5 +1,5 @@
 import { DiscogsClient } from '@lionralfs/discogs-client';
-const client = new DiscogsClient({ auth: { userToken: 'MqOJxeayrbHuVEvjJBXUpehWgMLDGoPbnsbuQumK' } });
+const client = new DiscogsClient({ auth: { userToken: process.env.DISCOGS_USER_TOKEN } });
 import { PrismaClient, Prisma } from '@prisma/client';
 const prisma = new PrismaClient()
 
