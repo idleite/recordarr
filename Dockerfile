@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npx prisma migrate 
+RUN npx prisma migrate reset
 RUN npm run build
 
 # Stage 2: Run the application
