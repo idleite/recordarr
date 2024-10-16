@@ -1,111 +1,131 @@
 "use client";
-import React, { useState } from 'react';
-import Navbar from '@/components/Nav';
-export default function Page() {
-  const [RecordKey, setRecordKey] = useState<number>(0);
-  const [RecordBox, setRecordBox] = useState<string>('01');
-  const [barcode, setBarcode] = useState<string>('');
-  const [isChecked, setIsChecked] = useState<boolean>(true);
-  const [isFailed, setIsFailed] = useState<boolean>(false);
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLFormElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      console.log(`Form submitted with RecordBox: ${RecordBox}, RecordKey: ${RecordKey}`);
-    }
+import React, { useState, useEffect } from 'react';
+import AlbumCard from '@/components/AlbumCard';
+import ArtistCard from '@/components/ArtistCard';
+import SongCard from '@/components/SongCard';
+import FilterSidebar from '@/components/SearchFilter';
+
+interface Artist {
+  id: number;
+  name: string;
+  img: string;
+}
+
+interface Album {
+  id: number;
+  name: string;
+  img: string;
+  artist: Artist;
+  year: number;
+  genre: string;
+}
+
+interface Song {
+  id: number;
+  name: string;
+  artist: Artist;
+  disk: Album;
+}
+
+export default function SearchPage() {
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [artists, setArtists] = useState<Artist[]>([]);
+  const [songs, setSongs] = useState<Song[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [filters, setFilters] = useState({
+    artist: '',
+    genre: '',
+    year: '',
+    format: '',
+    style: '',
+    contentType: 'all', // Default to show all content types
+  });
+
+  const fetchResults = async () => {
+    const params = new URLSearchParams();
+
+    if (searchTerm) params.append('searchTerm', searchTerm);
+    if (filters.artist) params.append('artist', filters.artist);
+    if (filters.genre) params.append('genre', filters.genre);
+    if (filters.year) params.append('year', filters.year);
+    if (filters.format) params.append('format', filters.format);
+    if (filters.style) params.append('style', filters.style);
+
+    const response = await fetch(`/api/search?${params.toString()}`);
+    const data = await response.json();
+
+    setAlbums(data.disks);
+    setArtists(data.artists);
+    setSongs(data.songs);
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const body = new URLSearchParams();
-    body.append('barcode', barcode);
-    body.append('location', `${RecordBox}-${RecordKey}`);
-    body.append('isChecked', isChecked.toString());
+  useEffect(() => {
+    fetchResults();
+  }, [filters, searchTerm]);
 
-    try {
-      const response = await fetch('/api/Disk', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body.toString(),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        console.log('Form submitted successfully:', result);
-        setBarcode('');
-        setIsChecked(true);
-        setRecordKey((prevKey) => prevKey + 1);
-        setIsFailed(false);
-      } else {
-        setBarcode('');
-        setIsChecked(true);
-        console.error('Form submission error:', result);
-        setIsFailed(true);
-      }
-    } catch (error) {
-      setIsFailed(true);
-      console.error('Form submission failed:', error);
-    }
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
-  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const [box, key] = value.split('-');
-    setRecordBox(box || RecordBox);
-    setRecordKey(parseInt(key, 10) || 0);
-  };
+  // Filter results based on the selected content type
+  const filteredArtists = filters.contentType === 'all' || filters.contentType === 'artists' ? artists : [];
+  const filteredAlbums = filters.contentType === 'all' || filters.contentType === 'albums' ? albums : [];
+  const filteredSongs = filters.contentType === 'all' || filters.contentType === 'songs' ? songs : [];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <form 
-        onSubmit={handleSubmit} 
-        onKeyUp={handleKeyPress} 
-        className="bg-white p-6 rounded shadow-md w-80"
-      >
-        <h2 className="text-lg font-semibold mb-4">Barcode Submission Form</h2>
+    <div className="min-h-screen bg-gray-100 flex">
+      {/* Sidebar */}
+      <FilterSidebar filters={filters} setFilters={setFilters} />
 
-        <label htmlFor="barcode" className="block mb-1 font-medium">Barcode</label>
-        <input
-          name="barcode"
-          id="barcode"
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
-          className="border border-gray-300 p-2 rounded mb-4 w-full"
-          required
-        />
-
-        <label htmlFor="location" className="block mb-1 font-medium">Location</label>
-        <input
-          name="location"
-          value={`${RecordBox}-${RecordKey}`}
-          onChange={handleLocationChange}
-          id="location"
-          className="border border-gray-300 p-2 rounded mb-4 w-full"
-          required
-        />
-
-        <label htmlFor="checkbox" className="flex items-center mb-4">
+      {/* Main Content */}
+      <div className="flex-1 p-6">
+        <div className="mb-6">
           <input
-            type="checkbox"
-            id="checkbox"
-            checked={isChecked}
-            onChange={(e) => setIsChecked(e.target.checked)}
-            className="mr-2"
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchInputChange}
+            placeholder="Search for an album, artist, or song..."
+            className="w-full p-2 border rounded-md"
           />
-          Checked
-        </label>
+        </div>
 
-        <button 
-          type="submit" 
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200 w-full"
-        >
-          Submit
-        </button>
-      </form>
 
-      {isFailed && <h1 className="text-red-500 mt-4">Submission failed. Please try again.</h1>}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {filteredArtists.map((artist) => (
+              <ArtistCard
+                key={artist.id}
+                id={artist.id}
+                name={artist.name}
+                imageUrl={artist.img || '/default.jpg'}
+              />
+            ))}
+            {filteredAlbums.map((album) => (
+              <AlbumCard
+                key={album.id}
+                id={album.id}
+                artistID={album.artist.id}
+                artistName={album.artist.name}
+                albumName={album.name}
+                imageUrl={album.img || '/download.jpg'}
+                year={album.year}
+                genre={album.genre || 'Unknown'}
+              />
+            ))}
+
+            {filteredSongs.map((song) => (
+              <SongCard
+                key={song.id}
+                id={song.id}
+                artistName={song.artist.name}
+                songName={song.name}
+                albumName={song.disk.name}
+                imageUrl={song.disk.img || '/placeholder_album.jpg'}
+                linkToAlbum={`/albums/${song.disk.id}`} // Link to the album page
+              />
+            ))}
+          </div>
+      </div>
     </div>
   );
 }
