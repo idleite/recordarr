@@ -100,6 +100,16 @@
             "null"
           ],
           "default": "/download.jpg"
+        },
+        "checkedOutBy": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/User"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -108,6 +118,27 @@
         "artistName",
         "year",
         "location"
+      ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "checkedOutDisks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Disk"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name"
       ]
     },
     "Artist": {
@@ -166,6 +197,9 @@
     },
     "disk": {
       "$ref": "#/definitions/Disk"
+    },
+    "user": {
+      "$ref": "#/definitions/User"
     },
     "artist": {
       "$ref": "#/definitions/Artist"

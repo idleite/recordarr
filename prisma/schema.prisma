@@ -9,7 +9,7 @@ generator client {
 }
 
 generator jsonSchema {
-  provider = "prisma-json-schema-generator"
+  provider              = "prisma-json-schema-generator"
   includeRequiredFields = "true"
 }
 
@@ -19,42 +19,50 @@ datasource db {
 }
 
 model Song {
-  disk       Disk   @relation(fields: [diskId], references: [id])
+  disk       Disk    @relation(fields: [diskId], references: [id])
   track      String
   name       String
-  id         Int    @id @default(autoincrement())
+  id         Int     @id @default(autoincrement())
   length     String?
-  artist     Artist @relation(fields: [artistName], references: [name])
+  artist     Artist  @relation(fields: [artistName], references: [name])
   artistName String
   diskName   String?
   diskId     Int
 }
 
 model Disk {
-  name       String 
-  id         Int    @id 
-  artistName String
-  artist     Artist @relation(fields: [artistName], references: [name])
-  barcode    String? @unique
-  year       Int
-  genre      String?
-  format     String?
-  style      String?
-  Song       Song[]
-  location   String
-  case       Boolean? @default(true)
-  img        String? @default("/download.jpg")
+  name           String
+  id             Int      @id
+  artistName     String
+  artist         Artist   @relation(fields: [artistName], references: [name])
+  barcode        String?  @unique
+  year           Int
+  genre          String?
+  format         String?
+  style          String?
+  Song           Song[]
+  location       String
+  case           Boolean? @default(true)
+  img            String?  @default("/download.jpg")
+  checkedOutBy   User?    @relation(fields: [checkedOutById], references: [id], name: "UserCheckedOut")
+  checkedOutById Int? // Foreign key to User model
+}
+
+model User {
+  id              Int    @id
+  name            String
+  checkedOutDisks Disk[] @relation("UserCheckedOut")
 }
 
 model Artist {
-  id   Int    @id 
-  name String @unique
+  id   Int     @id
+  name String  @unique
   img  String?
   Song Song[]
   Disk Disk[]
 }
 
 model Label {
-  id   Int    @id 
+  id   Int    @id
   name String
 }

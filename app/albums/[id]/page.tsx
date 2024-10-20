@@ -1,4 +1,4 @@
-import { PrismaClient} from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -9,6 +9,7 @@ interface AlbumPageProps {
     id: string;
   };
 }
+
 interface Song {
   track: string;
   name: string;
@@ -18,18 +19,21 @@ interface Song {
   diskName: string | null;
   diskId: number;
 }
-// Server component to fetch data for the album
+
 export default async function AlbumPage({ params }: AlbumPageProps) {
   const album = await prisma.disk.findUnique({
     where: { id: Number(params.id) },
     include: {
-      artist: true,  // Include artist data
-      Song: true,    // Include related songs
+      artist: true,
+      Song: true,
+      checkedOutBy: true,
     },
   });
+
   if (!album) {
     return <div>Album not found</div>;
   }
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto bg-white p-4 shadow-md rounded-md">
@@ -54,7 +58,13 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
             <p className="text-gray-700">Style: {album.style || 'Unknown'}</p>
             <p className="text-gray-700">Format: {album.format || 'Unknown'}</p>
             <p className="text-gray-700">Location: {album.location}</p>
-            <p className="text-gray-700">Case: {album.case ? 'Yes' : 'No'}</p>
+            
+            {/* Checked Out Status */}
+            {album.checkedOutBy ? (
+              <p className="text-red-500 mt-2">Checked out by: {album.checkedOutBy.name}</p>
+            ) : (
+              <p className="text-green-500 mt-2">Available</p>
+            )}
           </div>
         </div>
 
@@ -64,10 +74,19 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           <ul className="list-disc list-inside">
             {album.Song.map((song: Song) => (
               <li key={song.id} className="text-gray-800">
-                {song.name} {song.length ? `(${song.length})` : 'g'}
+                {song.name} {song.length ? `(${song.length})` : ''}
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* Checkout Button */}
+        <div className="mt-6">
+          {!album.checkedOutBy && (
+            <button className="bg-blue-500 text-white rounded-md p-2">
+              Check Out Album
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -24,17 +24,20 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    // Build dynamic filters for disks
+    const diskFilters: any = [];
+    
+    if (searchTerm) diskFilters.push({ name: { contains: searchTerm } });
+    if (artistFilter) diskFilters.push({ artistName: { contains: artistFilter } });
+    if (genreFilter) diskFilters.push({ genre: { contains: genreFilter } });
+    if (yearFilter) diskFilters.push({ year: parseInt(yearFilter) });
+    if (formatFilter) diskFilters.push({ format: { contains: formatFilter } });
+    if (styleFilter) diskFilters.push({ style: { contains: styleFilter } });
+
     // Disks query with filters
     const disks = await prisma.disk.findMany({
       where: {
-        AND: [
-          { name: { contains: searchTerm } },
-          { artistName: { contains: artistFilter } },
-          genreFilter ? { genre: { contains: genreFilter } } : undefined,
-          yearFilter ? { year: parseInt(yearFilter) } : undefined,
-          formatFilter ? { format: { contains: formatFilter } } : undefined,
-          styleFilter ? { style: { contains: styleFilter } } : undefined,
-        ].filter(Boolean),
+        AND: diskFilters, // Only includes conditions that are set
       },
       include: {
         artist: true,
@@ -42,21 +45,29 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    // Build dynamic filters for songs
+    const songFilters: any = [];
+
+    if (searchTerm) songFilters.push({ name: { contains: searchTerm } });
+    if (artistFilter) songFilters.push({ artistName: { contains: artistFilter } });
+
+    const diskSubFilters: any = [];
+    if (genreFilter) diskSubFilters.push({ genre: { contains: genreFilter } });
+    if (yearFilter) diskSubFilters.push({ year: parseInt(yearFilter) });
+    if (formatFilter) diskSubFilters.push({ format: { contains: formatFilter } });
+    if (styleFilter) diskSubFilters.push({ style: { contains: styleFilter } });
+
     // Songs query with filters
     const songs = await prisma.song.findMany({
       where: {
         AND: [
-          { name: { contains: searchTerm } },
-          { artistName: { contains: artistFilter } },
+          ...songFilters,
           {
             disk: {
-              genre: genreFilter ? { contains: genreFilter } : undefined,
-              year: yearFilter ? parseInt(yearFilter) : undefined,
-              format: formatFilter ? { contains: formatFilter } : undefined,
-              style: styleFilter ? { contains: styleFilter } : undefined,
+              AND: diskSubFilters, // Sub-filters applied to the associated disk
             },
           },
-        ].filter(Boolean),
+        ],
       },
       include: {
         artist: true,

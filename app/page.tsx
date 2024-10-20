@@ -62,7 +62,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     fetchResults();
-  }, [filters, searchTerm]);
+  });
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

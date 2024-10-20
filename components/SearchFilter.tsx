@@ -35,20 +35,23 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
   useEffect(() => {
     const handleMouseEnter = () => setIsVisible(true);
     const handleMouseLeave = () => setIsVisible(false);
-
+  
     const hoverArea = document.getElementById('hover-area');
-    if (hoverArea && sidebarRef.current) {
+    const sidebarElement = sidebarRef.current; // Store the current ref value in a variable
+  
+    if (hoverArea && sidebarElement) {
       hoverArea.addEventListener('mouseenter', handleMouseEnter);
-      sidebarRef.current.addEventListener('mouseleave', handleMouseLeave);
+      sidebarElement.addEventListener('mouseleave', handleMouseLeave);
     }
-
+  
     return () => {
-      if (hoverArea && sidebarRef.current) {
+      if (hoverArea && sidebarElement) {
         hoverArea.removeEventListener('mouseenter', handleMouseEnter);
-        sidebarRef.current.removeEventListener('mouseleave', handleMouseLeave);
+        sidebarElement.removeEventListener('mouseleave', handleMouseLeave);
       }
     };
   }, []);
+  
 
   return (
     <>
