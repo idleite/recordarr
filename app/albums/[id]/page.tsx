@@ -49,7 +49,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           <div className="ml-6">
             <h1 className="text-4xl font-bold">{album.name}</h1>
             <p className="text-xl text-gray-600">by 
-              <Link href={`/artist/${album.artist.id}`} className="ml-2 text-blue-500 underline">
+              <Link href={`/artists/${album.artist.id}`} className="ml-2 text-blue-500 underline">
                 {album.artist.name}
               </Link>
             </p>
