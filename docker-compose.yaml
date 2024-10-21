@@ -1,0 +1,13 @@
+
+
+services:
+  record:
+    restart: unless-stopped
+    image: ghcr.io/idleite/recordarr/recordarr:latest
+    container_name: recordarr
+    ports:
+      - 3000:3000
+    volumes:
+      - ./dev.db:/app/prisma/dev.db
+    environment:
+      - DISCOGS_USER_TOKEN=Your_discogs_user_token

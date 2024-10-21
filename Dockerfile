@@ -31,4 +31,5 @@ COPY --from=build /app/start.sh ./start.sh
 
 EXPOSE 3000
 
-CMD ["./start.sh"]
+CMD ["/bin/sh", "./start.sh"]
+
