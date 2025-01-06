@@ -36,12 +36,12 @@ export default function BarcodePage() {
       if (response.ok) {
         console.log('Form submitted successfully:', result);
         setBarcode('');
-        setIsChecked(true);
+        // setIsChecked(true);
         setRecordKey((prevKey) => prevKey + 1);
         setIsFailed(false);
       } else {
         setBarcode('');
-        setIsChecked(true);
+        // setIsChecked(true);
         console.error('Form submission error:', result);
         setIsFailed(true);
       }
