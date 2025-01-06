@@ -14,8 +14,8 @@ RUN npx prisma migrate reset --force
 RUN npm run build
 
 # Stage 2: Run the application
-FROM node:22-alpine AS production
-
+FROM node:22-slim AS production
+RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Install only production dependencies
