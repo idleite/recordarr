@@ -106,7 +106,7 @@ export default function FilterSidebar(search: params) {
           <input
             type="number"
             name="year"
-            defaultValue={Number(search.year)}
+            defaultValue={search.year}
             className="w-full border p-2 rounded"
             placeholder="Enter release year"
           />

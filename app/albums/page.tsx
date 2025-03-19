@@ -55,10 +55,10 @@ export default function AlbumListPage() {
       setAlbums(data);
     }, [params.toString()]);
   };
-console.log(albums)
-  // useEffect(() => {
+
+
     fetchAlbums(); // Fetch albums when component mounts or filters change
-  // }, [paramDict]);
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex">
