@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation'
 import AlbumCard from '@/components/AlbumCard';
 import FilterSidebar from '@/components/FilterSidebar';
 interface Artist {
@@ -20,38 +21,49 @@ interface Album {
   style: string;
   case: string;
 }
+interface params {
+  artist: string;
+  genre: string;
+  year: any
+  format: string;
+  style: string;
+}
 export default function AlbumListPage() {
   const [albums, setAlbums] = useState<Album[]>([]);
-  const [filters, setFilters] = useState({
-    artist: '',
-    genre: '',
-    year: '',
-    format: '',
-    style: '',
-  });
-
-  const fetchAlbums = async () => {
-    // Fetch filtered albums via the API route
-    const response = await fetch('/api/albums', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(filters), // Send the filters to the server
-    });
-
-    const data = await response.json();
-    setAlbums(data);
+  const searchParams = useSearchParams()
+  var paramDict: params = {
+    artist: searchParams.get("artist")|| '',
+    genre: searchParams.get("genre")|| '',
+    year: searchParams.get("year")|| '',
+    format: searchParams.get("format")|| '',
+    style: searchParams.get("style")|| ''
   };
 
-  useEffect(() => {
+  const fetchAlbums = async () => {
+
+      const params = new URLSearchParams();
+      params.append('artist', searchParams.get("artist")|| '');
+      params.append('genre', searchParams.get("genre")|| '');
+      params.append('year', searchParams.get("year")|| '');
+      params.append('format', searchParams.get("format")|| '');
+      params.append('style', searchParams.get("style")|| '');
+      // Fetch filtered albums via the API route
+    useEffect(() => async () => {
+      const response = await fetch(`/api/albums?${params.toString()}`);
+  
+      const data = await response.json();
+      setAlbums(data);
+    }, [params.toString()]);
+  };
+console.log(albums)
+  // useEffect(() => {
     fetchAlbums(); // Fetch albums when component mounts or filters change
-  });
+  // }, [paramDict]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex">
       {/* Sidebar */}
-      <FilterSidebar filters={filters} setFilters={setFilters} />
+      <FilterSidebar search={paramDict}/>
 
       {/* Album List */}
       <div className="flex-1">

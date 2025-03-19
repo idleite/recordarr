@@ -1,23 +1,35 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function POST(req: Request) {
-  const filters = await req.json(); // Get the filters from the POST request body
-
+export async function GET(req: NextRequest) {
+  const artistFilter = req.nextUrl.searchParams.get("artist")?.toLowerCase();
+  const genreFilter = req.nextUrl.searchParams.get("genre")?.toLowerCase() || '';
+  const yearFilter = req.nextUrl.searchParams.get("year") || '';
+  const formatFilter = req.nextUrl.searchParams.get("format")?.toLowerCase() || '';
+  const styleFilter = req.nextUrl.searchParams.get("style")?.toLowerCase() || '';
+  const diskFilters: any = [];
   // Build the query based on filters
-  const query: any = {
-    include: { artist: true },
-  };
 
-  if (filters.artist) query.where = { ...query.where, artistName: filters.artist };
-  if (filters.genre) query.where = { ...query.where, genre: filters.genre };
-  if (filters.year) query.where = { ...query.where, year: parseInt(filters.year) };
-  if (filters.format) query.where = { ...query.where, format: filters.format };
-  if (filters.style) query.where = { ...query.where, style: filters.style };
+  if (artistFilter) diskFilters.push({ artistName: { contains: artistFilter } });
+  if (genreFilter) diskFilters.push({ genre: { contains: genreFilter } });
+  if (yearFilter) diskFilters.push({ year: parseInt(yearFilter) });
+  if (formatFilter) diskFilters.push({ format: { contains: formatFilter } });
+  if (styleFilter) diskFilters.push({ style: { contains: styleFilter } });
 
-  const albums = await prisma.disk.findMany(query);
+  // Disks query with filters
 
-  return NextResponse.json(albums);
+
+    const disks = await prisma.disk.findMany({
+      where: {
+        AND: diskFilters, // Only includes conditions that are set
+      },
+      include: {
+        artist: true,
+        Song: true,
+      },
+    });
+console.log(disks+"hi")
+  return NextResponse.json(disks);
 }

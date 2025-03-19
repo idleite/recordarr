@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+// import { useMemo } from 'react';
+import { useSearchParams } from 'next/navigation'
 import AlbumCard from '@/components/AlbumCard';
 import ArtistCard from '@/components/ArtistCard';
 import SongCard from '@/components/SongCard';
@@ -28,78 +30,101 @@ interface Song {
   disk: Album;
 }
 
+interface params {
+  searchTerm: string;
+  type: string;
+  artist: string;
+  genre: string;
+  year: any
+  format: string;
+  style: string;
+}
+
 export default function SearchPage() {
+  const searchParams = useSearchParams()
   const [albums, setAlbums] = useState<Album[]>([]);
   const [artists, setArtists] = useState<Artist[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filters, setFilters] = useState({
-    artist: '',
-    genre: '',
-    year: '',
-    format: '',
-    style: '',
-    contentType: 'all', // Default to show all content types
-  });
+  const searchTerm: string = searchParams.get("query")|| '';
+  var paramDict: params = {
+    searchTerm: searchTerm || '',
+    type: searchParams.get("type")|| '',
+    artist: searchParams.get("artist")|| '',
+    genre: searchParams.get("genre")|| '',
+    year: searchParams.get("year")|| '',
+    format: searchParams.get("format")|| '',
+    style: searchParams.get("style")|| ''
+  };
+
 
   const fetchResults = async () => {
     const params = new URLSearchParams();
 
-    if (searchTerm) params.append('searchTerm', searchTerm);
-    if (filters.artist) params.append('artist', filters.artist);
-    if (filters.genre) params.append('genre', filters.genre);
-    if (filters.year) params.append('year', filters.year);
-    if (filters.format) params.append('format', filters.format);
-    if (filters.style) params.append('style', filters.style);
+    params.append('searchTerm', searchTerm || ''); 
+    params.append('type', searchParams.get("type")|| '');
+    params.append('artist', searchParams.get("artist")|| '');
+    params.append('genre', searchParams.get("genre")|| '');
+    params.append('year', searchParams.get("year")|| '');
+    params.append('format', searchParams.get("format")|| '');
+    params.append('style', searchParams.get("style")|| '');
 
-    const response = await fetch(`/api/search?${params.toString()}`);
-    const data = await response.json();
+    // const response = await fetch(`/api/search?${params.toString()}`);
+    useEffect(() => async () => {
+      const response = await fetch(`/api/search?${params.toString()}`);
 
-    setAlbums(data.disks);
-    setArtists(data.artists);
-    setSongs(data.songs);
+      const data = await response.json();
+      
+      setAlbums(data.disks);
+      setArtists(data.artists);
+      setSongs(data.songs);
+    }, [params.toString()]);
+
+
+
   };
 
-  useEffect(() => {
+  // useEffect(() => {
     fetchResults();
-  });
+  // });
 
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
 
   // Filter results based on the selected content type
-  const filteredArtists = filters.contentType === 'all' || filters.contentType === 'artists' ? artists : [];
-  const filteredAlbums = filters.contentType === 'all' || filters.contentType === 'albums' ? albums : [];
-  const filteredSongs = filters.contentType === 'all' || filters.contentType === 'songs' ? songs : [];
+  const filteredArtists = paramDict.type == "all" || paramDict.type == "artists" ? artists : [];
+  const filteredAlbums = paramDict.type == "all" || paramDict.type == 'albums' ? albums : [];
+  const filteredSongs = paramDict.type == "all" || paramDict.type == 'songs' ? songs : [];
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
-      <FilterSidebar filters={filters} setFilters={setFilters} />
+      <FilterSidebar search={paramDict}  />
 
       {/* Main Content */}
       <div className="flex-1 p-6">
         <div className="mb-6">
+
+        <form >
           <input
             type="text"
-            value={searchTerm}
-            onChange={handleSearchInputChange}
+            name="query"
+            defaultValue={searchParams.get("query")}
             placeholder="Search for an album, artist, or song..."
             className="w-full p-2 border rounded-md"
           />
+        </form>
         </div>
 
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {filteredArtists.map((artist) => (
-              <ArtistCard
-                key={artist.id}
-                id={artist.id}
-                name={artist.name}
-                imageUrl={artist.img || '/default.jpg'}
-              />
-            ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {
+              (paramDict.type == "all" || paramDict.type == "artists") && filteredArtists.map((artist) => (
+                <ArtistCard
+                  key={artist.id}
+                  id={artist.id}
+                  name={artist.name}
+                  imageUrl={artist.img || '/default.jpg'}
+                />
+              ))
+            }
+            
             {filteredAlbums.map((album) => (
               <AlbumCard
                 key={album.id}
@@ -125,7 +150,9 @@ export default function SearchPage() {
               />
             ))}
           </div>
+
       </div>
+
     </div>
   );
 }

@@ -1,47 +1,35 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 
-interface FilterSidebarProps {
-  filters: {
-    artist: string;
-    genre: string;
-    year: string;
-    format: string;
-    style: string;
-  };
-  setFilters: React.Dispatch<React.SetStateAction<{
-    artist: string;
-    genre: string;
-    year: string;
-    format: string;
-    style: string;
-  }>>;
+
+interface params {
+
+  artist: string;
+  genre: string;
+  year: any
+  format: string;
+  style: string;
 }
 
-export default function FilterSidebar({ filters, setFilters }: FilterSidebarProps) {
+export default function FilterSidebar(search: params) {
   const [isVisible, setIsVisible] = useState(false); // Controls visibility of the sidebar
   const sidebarRef = useRef<HTMLDivElement | null>(null);
+  search = search.search
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [e.target.name]: e.target.value,
-    }));
-  };
 
   // Show sidebar on hover
   useEffect(() => {
     const handleMouseEnter = () => setIsVisible(true);
     const handleMouseLeave = () => setIsVisible(false);
-
+  
     const hoverArea = document.getElementById('hover-area');
     const sidebarElement = sidebarRef.current; // Store the current ref value in a variable
-
+  
     if (hoverArea && sidebarElement) {
       hoverArea.addEventListener('mouseenter', handleMouseEnter);
       sidebarElement.addEventListener('mouseleave', handleMouseLeave);
     }
-
+  
     return () => {
       if (hoverArea && sidebarElement) {
         hoverArea.removeEventListener('mouseenter', handleMouseEnter);
@@ -49,7 +37,11 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
       }
     };
   }, []);
+  // function resetFilters() {
+  //   // document.getElementById("filters")?.childNodes[1].childNodes[1].defa = ""
+  //   console.log(document.getElementById("filters")?.childNodes[1].childNodes[1].val)
 
+  // }
   return (
     <>
       {/* Hover Area (Trigger to show sidebar) */}
@@ -66,6 +58,9 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
         ${isVisible ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <h2 className="text-2xl font-semibold mb-4">Filters</h2>
+          <form id='filters'>
+
+
 
         {/* Artist Filter */}
         <div className="mb-4">
@@ -73,8 +68,7 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
           <input
             type="text"
             name="artist"
-            value={filters.artist}
-            onChange={handleChange}
+            defaultValue={search.artist}
             className="w-full border p-2 rounded"
             placeholder="Enter artist name"
           />
@@ -86,8 +80,7 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
           <input
             type="text"
             name="genre"
-            value={filters.genre}
-            onChange={handleChange}
+            defaultValue={search.genre}
             className="w-full border p-2 rounded"
             placeholder="Enter genre"
           />
@@ -99,8 +92,7 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
           <input
             type="number"
             name="year"
-            value={filters.year}
-            onChange={handleChange}
+            defaultValue={Number(search.year)}
             className="w-full border p-2 rounded"
             placeholder="Enter release year"
           />
@@ -112,8 +104,7 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
           <input
             type="text"
             name="format"
-            value={filters.format}
-            onChange={handleChange}
+            defaultValue={search.format}
             className="w-full border p-2 rounded"
             placeholder="Enter format"
           />
@@ -125,12 +116,25 @@ export default function FilterSidebar({ filters, setFilters }: FilterSidebarProp
           <input
             type="text"
             name="style"
-            value={filters.style}
-            onChange={handleChange}
+            defaultValue={search.style}
             className="w-full border p-2 rounded"
             placeholder="Enter style"
           />
         </div>
+        {/* Apply */}
+        <div className="mb-4">
+          <button 
+          type="submit" 
+          className="w-full border p-2 rounded">Apply</button>
+        </div>
+        {/* Reset */}
+        {/* <div className="mb-4">
+          <button 
+          type="button"
+          onClick={resetFilters} 
+          className="w-full border p-2 rounded">Reset Filters</button>
+        </div> */}
+        </form>
       </div>
     </>
   );
