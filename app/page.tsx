@@ -61,7 +61,7 @@ export default function SearchPage() {
     const params = new URLSearchParams();
 
     params.append('searchTerm', searchTerm || ''); 
-    params.append('type', searchParams.get("type")|| '');
+    params.append('type', searchParams.get("type")|| 'all');
     params.append('artist', searchParams.get("artist")|| '');
     params.append('genre', searchParams.get("genre")|| '');
     params.append('year', searchParams.get("year")|| '');
