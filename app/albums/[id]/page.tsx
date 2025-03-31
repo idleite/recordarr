@@ -59,12 +59,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
             <p className="text-gray-700">Format: {album.format || 'Unknown'}</p>
             <p className="text-gray-700">Location: {album.location}</p>
             
-            {/* Checked Out Status */}
-            {album.checkedOutBy ? (
-              <p className="text-red-500 mt-2">Checked out by: {album.checkedOutBy.name}</p>
-            ) : (
-              <p className="text-green-500 mt-2">Available</p>
-            )}
+
           </div>
         </div>
 
@@ -80,14 +75,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           </ul>
         </div>
 
-        {/* Checkout Button */}
-        <div className="mt-6">
-          {!album.checkedOutBy && (
-            <button className="bg-blue-500 text-white rounded-md p-2">
-              Check Out Album
-            </button>
-          )}
-        </div>
+
       </div>
     </div>
   );
