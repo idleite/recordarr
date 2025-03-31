@@ -21,6 +21,7 @@ export default async function DiskSave(DiskBarcode, DiskLocation, isChecked) {
     let ArtistName = data["artists"][0]["name"];
     let ArtistID = data["artists"][0]["id"];
     let ArtistImg = data["artists"][0]["thumbnail_url"];
+    console.log(ArtistImg) // temp testing
 
     // Check if artist exists
     let artist = await prisma.artist.findUnique({

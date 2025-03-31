@@ -120,27 +120,6 @@
         "location"
       ]
     },
-    "User": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer"
-        },
-        "name": {
-          "type": "string"
-        },
-        "checkedOutDisks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Disk"
-          }
-        }
-      },
-      "required": [
-        "id",
-        "name"
-      ]
-    },
     "Artist": {
       "type": "object",
       "properties": {
@@ -188,6 +167,109 @@
         "id",
         "name"
       ]
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "checkedOutDisks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Disk"
+          }
+        },
+        "id": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password_hash": {
+          "type": "string"
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Session"
+          }
+        },
+        "salt": {
+          "type": "string"
+        },
+        "passwordResets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PasswordResetSession"
+          }
+        },
+        "role": {
+          "type": "string",
+          "default": "admin"
+        }
+      },
+      "required": [
+        "email",
+        "username",
+        "password_hash",
+        "salt"
+      ]
+    },
+    "Session": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "expires_at"
+      ]
+    },
+    "PasswordResetSession": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "expires_at": {
+          "type": "integer"
+        },
+        "email_verified": {
+          "type": "integer",
+          "default": 0
+        },
+        "two_factor_verified": {
+          "type": "integer",
+          "default": 0
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "email",
+        "code",
+        "expires_at"
+      ]
     }
   },
   "type": "object",
@@ -198,14 +280,20 @@
     "disk": {
       "$ref": "#/definitions/Disk"
     },
-    "user": {
-      "$ref": "#/definitions/User"
-    },
     "artist": {
       "$ref": "#/definitions/Artist"
     },
     "label": {
       "$ref": "#/definitions/Label"
+    },
+    "user": {
+      "$ref": "#/definitions/User"
+    },
+    "session": {
+      "$ref": "#/definitions/Session"
+    },
+    "passwordResetSession": {
+      "$ref": "#/definitions/PasswordResetSession"
     }
   }
 }

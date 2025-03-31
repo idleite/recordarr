@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import SliderTabs from '@/components/Slider'; // Assuming the slider is in the same folder
+// import { cookies } from 'next/headers';
 
 export default function ReleasePage() {
   const [RecordKey, setRecordKey] = useState<number>(0);
@@ -8,7 +9,9 @@ export default function ReleasePage() {
   const [Release, setRelease] = useState<string>('');
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isFailed, setIsFailed] = useState<boolean>(false);
-
+  const allowed = fetch('http://localhost:3001/api/user', {
+    method: 'GET',
+  })
   const handleKeyPress = (event: React.KeyboardEvent<HTMLFormElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();

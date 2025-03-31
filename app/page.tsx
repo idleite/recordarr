@@ -7,6 +7,7 @@ import AlbumCard from '@/components/AlbumCard';
 import ArtistCard from '@/components/ArtistCard';
 import SongCard from '@/components/SongCard';
 import FilterSidebar from '@/components/SearchFilter';
+import { Param } from '@prisma/client/runtime/library';
 
 interface Artist {
   id: number;
@@ -45,22 +46,22 @@ export default function SearchPage() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [artists, setArtists] = useState<Artist[]>([]);
   const [songs, setSongs] = useState<Song[]>([]);
-  const searchTerm: string = searchParams.get("query")|| '';
-  var paramDict: params = {
-    searchTerm: searchTerm || '',
-    type: searchParams.get("type")|| '',
+  const searchTerm: string = searchParams.get("searchTerm")|| '';
+  var paramDict: params =useMemo(() => ({
+    searchTerm: searchParams.get("searchTerm")|| '',
+    type: searchParams.get("type")|| 'all',
     artist: searchParams.get("artist")|| '',
     genre: searchParams.get("genre")|| '',
     year: searchParams.get("year")|| '',
     format: searchParams.get("format")|| '',
     style: searchParams.get("style")|| ''
-  };
+  }), [searchParams]);
 
 
-  const fetchResults = async () => {
+  async function fetchResults() {
     const params = new URLSearchParams();
 
-    params.append('searchTerm', searchTerm || ''); 
+    params.append('searchTerm', searchParams.get("searchTerm")|| ''); 
     params.append('type', searchParams.get("type")|| 'all');
     params.append('artist', searchParams.get("artist")|| '');
     params.append('genre', searchParams.get("genre")|| '');
@@ -69,25 +70,23 @@ export default function SearchPage() {
     params.append('style', searchParams.get("style")|| '');
 
     // const response = await fetch(`/api/search?${params.toString()}`);
-    useEffect(() => async () => {
-      const response = await fetch(`/api/search?${params.toString()}`);
 
-      const data = await response.json();
-      
-      setAlbums(data.disks);
-      setArtists(data.artists);
-      setSongs(data.songs);
-    }, [params.toString()]);
+    const response = await fetch(`/api/search?${params.toString()}`);
+
+    const data = await response.json();
+
+    setAlbums(data.disks);
+    setArtists(data.artists);
+    setSongs(data.songs);
+
 
 
 
   };
 
-  // useEffect(() => {
-    fetchResults();
-  // });
-
-
+  useEffect(() => {
+    fetchResults()
+  }, [paramDict]);
   // Filter results based on the selected content type
   const filteredArtists = paramDict.type == "all" || paramDict.type == "artists" ? artists : [];
   const filteredAlbums = paramDict.type == "all" || paramDict.type == 'albums' ? albums : [];
@@ -102,15 +101,16 @@ export default function SearchPage() {
       <div className="flex-1 p-6">
         <div className="mb-6">
 
-        <form >
+
           <input
             type="text"
-            name="query"
-            defaultValue={searchParams.get("query")}
+            form='filters'
+            name="searchTerm"
+            defaultValue={searchParams.get("searchTerm")}
             placeholder="Search for an album, artist, or song..."
             className="w-full p-2 border rounded-md"
           />
-        </form>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">

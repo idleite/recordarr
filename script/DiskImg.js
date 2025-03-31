@@ -24,9 +24,10 @@ async function updateDiskIds() {
       const releaseId = disk.id; // Assuming disk.id corresponds to the Discogs release ID
       const release = await discogs.getRelease(releaseId);
         console.log(release["data"].images)
+        console.log(release["data"].images.length)
       // If a corresponding release is found, update the disk with the thumbnail
-      if (release && release.images && release.images.length > 0) {
-        const thumbnailUrl = release.images[0].uri; // Get the first image's URI
+      if (release && release["data"].images && (release["data"].images.length > 0)) {
+        const thumbnailUrl = release["data"].images[0].uri // Get the first image's URI
         console.log(thumbnailUrl)
         // Update the disk in the database with the thumbnail link
         await prisma.disk.update({

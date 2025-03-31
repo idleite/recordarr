@@ -48,11 +48,7 @@ model Disk {
   checkedOutById Int? // Foreign key to User model
 }
 
-model User {
-  id              Int    @id
-  name            String
-  checkedOutDisks Disk[] @relation("UserCheckedOut")
-}
+
 
 model Artist {
   id   Int     @id
@@ -66,3 +62,55 @@ model Label {
   id   Int    @id
   name String
 }
+
+
+model User {
+  checkedOutDisks Disk[] @relation("UserCheckedOut")
+id Int @id @default(autoincrement())
+email String @unique
+username String
+password_hash String
+// email_verified Int @default(0)
+// totp_key Bytes?
+// recovery_code Bytes
+sessions Session[]
+salt  String
+// emailVerifications EmailVerificationRequest[]
+passwordResets PasswordResetSession[]
+@@index([email])
+role String @default("admin")
+
+}
+
+model Session {
+id String @id
+user_id Int
+expires_at DateTime
+// two_factor_verified Int @default(0)
+
+user User @relation(fields: [user_id], references: [id])
+}
+
+// model EmailVerificationRequest {
+// id String @id
+// user_id Int
+// email String
+// code String
+// expires_at Int
+
+// user User @relation(fields: [user_id], references: [id])
+// }
+
+model PasswordResetSession {
+id String @id
+user_id Int
+email String
+code String
+expires_at Int
+email_verified Int @default(0)
+two_factor_verified Int @default(0)
+
+user User @relation(fields: [user_id], references: [id])
+}
+
+// Indexes
