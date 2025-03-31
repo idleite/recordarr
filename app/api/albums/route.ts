@@ -30,6 +30,5 @@ export async function GET(req: NextRequest) {
         Song: true,
       },
     });
-console.log(disks+"hi")
   return NextResponse.json(disks);
 }

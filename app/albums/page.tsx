@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation'
 import AlbumCard from '@/components/AlbumCard';
 import FilterSidebar from '@/components/FilterSidebar';
@@ -31,15 +31,15 @@ interface params {
 export default function AlbumListPage() {
   const [albums, setAlbums] = useState<Album[]>([]);
   const searchParams = useSearchParams()
-  var paramDict: params = {
+  var paramDict: params = useMemo(() => ({
     artist: searchParams.get("artist")|| '',
     genre: searchParams.get("genre")|| '',
     year: searchParams.get("year")|| '',
     format: searchParams.get("format")|| '',
     style: searchParams.get("style")|| ''
-  };
+  }), [searchParams]);
 
-  const fetchAlbums = async () => {
+  async function fetchAlbums() {
 
       const params = new URLSearchParams();
       params.append('artist', searchParams.get("artist")|| '');
@@ -48,17 +48,17 @@ export default function AlbumListPage() {
       params.append('format', searchParams.get("format")|| '');
       params.append('style', searchParams.get("style")|| '');
       // Fetch filtered albums via the API route
-    useEffect(() => async () => {
+
       const response = await fetch(`/api/albums?${params.toString()}`);
   
       const data = await response.json();
       setAlbums(data);
-    }, [params.toString()]);
+
   };
 
-
+  useEffect(() => {
     fetchAlbums(); // Fetch albums when component mounts or filters change
-
+  }, [paramDict]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 flex">
