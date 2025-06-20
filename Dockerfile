@@ -1,11 +1,11 @@
 # Stage 1: Build the application
-ENV DATABASE_TYPE="sqlite"
-ENV DATABASE_URL="file:./dev.db"
+
 FROM node:22-slim AS build
 # Install OpenSSL
 RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-
+ENV DATABASE_TYPE="sqlite"
+ENV DATABASE_URL="file:./dev.db"
 # Install dependencies
 COPY package*.json ./
 RUN npm install
