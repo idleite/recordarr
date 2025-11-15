@@ -14,8 +14,8 @@ generator jsonSchema {
 }
 
 datasource db {
-  provider = env("DATABASE_TYPE")
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Song {
