@@ -11,7 +11,12 @@ interface params {
   style: string;
 }
 
-export default function FilterSidebar(search: params) {
+
+interface FilterSidebarProps {
+  search: params;
+}
+
+export default function FilterSidebar({ search }: FilterSidebarProps) {
   const [isVisible, setIsVisible] = useState(false); // Controls visibility of the sidebar
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   search = search.search
